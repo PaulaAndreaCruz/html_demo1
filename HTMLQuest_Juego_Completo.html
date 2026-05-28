@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Quest — Academia Hacker</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap');
+
+:root {
+  --bg:#0a0a0f; --bg2:#0f0f1a; --bg3:#13131f; --card:#16161f;
+  --border:rgba(127,119,221,0.18); --border2:rgba(127,119,221,0.4);
+  --accent:#7f77dd; --accent2:#1d9e75; --amber:#ef9f27; --danger:#d85a30; --pink:#d4537e;
+  --text:#e8e6ff; --muted:#7a7899;
+  --mono:'Share Tech Mono',monospace; --display:'Orbitron',sans-serif; --body:'Exo 2',sans-serif;
+  --glow:0 0 20px rgba(127,119,221,0.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999;}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(127,119,221,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(127,119,221,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10000;transition:opacity .5s,visibility .5s;}
+#loader.hidden{opacity:0;visibility:hidden;}
+.loader-logo{font-family:var(--display);font-size:36px;font-weight:900;color:var(--accent);margin-bottom:30px;letter-spacing:4px;}
+.loader-logo span{color:var(--accent2);}
+.loader-bar-wrap{width:280px;height:4px;background:rgba(127,119,221,0.15);border-radius:2px;overflow:hidden;}
+.loader-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;animation:load 1.8s ease forwards;width:0;}
+@keyframes load{to{width:100%;}}
+.loader-text{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:14px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;}
+.nav-logo{font-family:var(--display);font-size:17px;font-weight:900;color:var(--accent);letter-spacing:2px;cursor:pointer;}
+.nav-logo span{color:var(--accent2);}
+.nav-links{display:flex;gap:4px;}
+.nav-link{padding:6px 14px;font-size:12px;font-family:var(--mono);color:var(--muted);cursor:pointer;border-radius:4px;border:1px solid transparent;transition:all .2s;background:none;}
+.nav-link:hover,.nav-link.active{color:var(--accent);border-color:var(--border2);background:rgba(127,119,221,0.08);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.xp-pill{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(127,119,221,0.1);border:1px solid var(--border);border-radius:20px;font-size:12px;font-family:var(--mono);}
+.xp-pill .val{color:var(--accent);font-weight:700;}
+.coins-pill{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(239,159,39,0.1);border:1px solid rgba(239,159,39,0.3);border-radius:20px;font-size:12px;font-family:var(--mono);}
+.coins-pill .val{color:var(--amber);font-weight:700;}
+.avatar-btn{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;cursor:pointer;border:2px solid var(--border2);transition:transform .2s;}
+.avatar-btn:hover{transform:scale(1.08);}
+
+/* APP */
+.app{padding-top:58px;position:relative;z-index:1;}
+.section{display:none;}
+.section.active{display:block;}
+
+/* PARTICLES */
+.particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--accent);opacity:0;animation:pfloat linear infinite;}
+@keyframes pfloat{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:.6;}90%{opacity:.2;}100%{transform:translateY(-10vh) scale(1.5);opacity:0;}}
+
+/* ═══ INICIO ═══ */
+#inicio{min-height:calc(100vh - 58px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1px solid var(--border2);border-radius:20px;font-size:12px;font-family:var(--mono);color:var(--accent2);background:rgba(29,158,117,0.08);margin-bottom:28px;animation:fadeUp .6s ease both;}
+.hero-title{font-family:var(--display);font-size:clamp(38px,8vw,76px);font-weight:900;line-height:1;letter-spacing:2px;margin-bottom:14px;animation:fadeUp .6s .1s ease both;}
+.hero-title .l1{color:var(--text);display:block;}
+.hero-title .l2{color:var(--accent);display:block;}
+.hero-sub{font-size:17px;color:var(--muted);max-width:480px;line-height:1.6;margin-bottom:36px;animation:fadeUp .6s .2s ease both;}
+.hero-stats{display:flex;gap:36px;justify-content:center;margin-bottom:44px;animation:fadeUp .6s .3s ease both;}
+.hstat-num{font-family:var(--display);font-size:30px;font-weight:900;color:var(--accent);}
+.hstat-lbl{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeUp .6s .4s ease both;}
+.btn-primary{padding:13px 30px;background:var(--accent);color:#fff;font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:1px;border:none;border-radius:8px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-primary:hover{background:#9590e8;transform:translateY(-2px);box-shadow:var(--glow);}
+.btn-outline{padding:13px 30px;background:transparent;color:var(--accent);font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:1px;border:1px solid var(--border2);border-radius:8px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-outline:hover{background:rgba(127,119,221,0.1);transform:translateY(-2px);}
+.terminal-window{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;text-align:left;max-width:680px;width:100%;margin-top:50px;animation:fadeUp .8s .5s ease both;}
+.terminal-bar{background:var(--card);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.tdot{width:10px;height:10px;border-radius:50%;}
+.tred{background:#e25050;} .tyellow{background:var(--amber);} .tgreen{background:var(--accent2);}
+.ttitle{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:8px;}
+.terminal-body{padding:20px;font-family:var(--mono);font-size:13px;line-height:1.8;}
+.tc{color:#4a4870;} .tt{color:var(--accent);} .ta{color:var(--accent2);} .tv{color:var(--amber);} .tx{color:var(--text);}
+.tcursor{display:inline-block;width:8px;height:14px;background:var(--accent);animation:blink 1s infinite;vertical-align:middle;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* ═══ MISIONES LAYOUT ═══ */
+#misiones{padding:24px 20px 60px;max-width:1120px;margin:0 auto;}
+.event-banner{background:linear-gradient(135deg,rgba(127,119,221,0.1),rgba(29,158,117,0.06));border:1px solid var(--border2);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.event-icon{font-size:26px;}
+.event-name{font-family:var(--display);font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.event-desc{font-size:11px;color:var(--muted);font-family:var(--mono);}
+.event-xp-badge{margin-left:auto;background:rgba(239,159,39,0.12);border:1px solid rgba(239,159,39,0.3);padding:5px 14px;border-radius:20px;font-family:var(--display);font-size:12px;font-weight:700;color:var(--amber);}
+.missions-layout{display:grid;grid-template-columns:270px 1fr;gap:18px;}
+
+/* SIDEBAR */
+.sidebar-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px;}
+.sc-title{padding:9px 14px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);}
+.mission-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border);position:relative;}
+.mission-item:last-child{border-bottom:none;}
+.mission-item:hover{background:rgba(127,119,221,0.07);}
+.mission-item.mi-active{background:rgba(127,119,221,0.13);border-left:3px solid var(--accent);}
+.mission-item.mi-done{border-left:3px solid var(--accent2);}
+.m-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ic-done{background:rgba(29,158,117,0.15);}
+.ic-active{background:rgba(127,119,221,0.15);}
+.ic-locked{background:rgba(255,255,255,0.04);filter:grayscale(1);}
+.m-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.2;}
+.m-sub{font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:1px;}
+.m-badge{margin-left:auto;font-size:10px;padding:2px 8px;border-radius:8px;font-family:var(--mono);flex-shrink:0;}
+.bd-done{background:rgba(29,158,117,0.15);color:var(--accent2);}
+.bd-active{background:rgba(127,119,221,0.15);color:var(--accent);}
+.bd-locked{background:rgba(255,255,255,0.04);color:var(--muted);}
+/* rank */
+.rank-display{padding:14px;text-align:center;}
+.rank-name{font-family:var(--display);font-size:14px;font-weight:700;color:var(--accent);margin-bottom:3px;}
+.rank-next{font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:9px;}
+.rank-bar{height:5px;background:rgba(127,119,221,0.15);border-radius:3px;overflow:hidden;}
+.rank-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .5s;}
+.rank-nums{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:4px;}
+/* badges sidebar */
+.badges-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;}
+.badge-item{text-align:center;cursor:pointer;}
+.badge-circle{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;margin:0 auto 3px;border:1px solid var(--border);transition:all .2s;}
+.badge-circle.earned{border-color:var(--accent);background:rgba(127,119,221,0.15);box-shadow:0 0 8px rgba(127,119,221,0.2);}
+.badge-circle.locked2{filter:grayscale(1);opacity:.3;}
+.badge-label{font-size:9px;color:var(--muted);font-family:var(--mono);line-height:1.3;}
+
+/* MISSION PANEL */
+.mission-panel{display:flex;flex-direction:column;gap:14px;}
+
+/* header misión */
+.m-header{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.phase-pills{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap;}
+.phase-pill{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;font-size:11px;font-family:var(--mono);cursor:pointer;transition:all .15s;border:1px solid transparent;}
+.pp-done{background:rgba(29,158,117,0.12);color:var(--accent2);border-color:rgba(29,158,117,0.3);}
+.pp-active{background:var(--accent);color:#fff;}
+.pp-inactive{background:rgba(255,255,255,0.04);color:var(--muted);border-color:var(--border);}
+.m-title-big{font-family:var(--display);font-size:19px;font-weight:700;color:var(--text);margin-bottom:7px;}
+.m-story{font-size:13px;color:var(--muted);margin-bottom:8px;}
+.story-box{background:rgba(127,119,221,0.05);border-left:3px solid var(--accent);padding:12px 15px;border-radius:0 8px 8px 0;font-size:13px;line-height:1.7;color:#c0bde8;font-family:var(--mono);}
+.story-box code{background:rgba(127,119,221,0.15);padding:1px 6px;border-radius:4px;color:var(--accent);}
+
+/* THEORY */
+.theory-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.theory-tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;}
+.theory-tab{padding:10px 16px;font-size:12px;font-family:var(--mono);cursor:pointer;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;}
+.theory-tab:hover{color:var(--text);}
+.theory-tab.tactive{color:var(--accent);border-bottom-color:var(--accent);}
+.theory-body{padding:18px;}
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
+.concept-label{font-size:10px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.code-display{background:#080810;border:1px solid rgba(127,119,221,0.2);border-radius:8px;padding:12px;font-family:var(--mono);font-size:12px;line-height:1.8;color:#a8a8f8;white-space:pre-wrap;}
+.preview-display{background:#fff;border-radius:8px;padding:12px;min-height:90px;font-family:sans-serif;font-size:13px;color:#333;line-height:1.6;}
+.desc-text{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px;}
+.desc-text code{background:rgba(127,119,221,0.12);padding:1px 6px;border-radius:4px;color:var(--accent);font-family:var(--mono);font-size:11px;}
+
+/* CHALLENGE */
+.challenge-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.ch-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
+.ch-title{font-family:var(--display);font-size:13px;font-weight:700;color:var(--text);}
+.ch-xp{font-size:12px;color:var(--accent);font-family:var(--mono);font-weight:700;}
+.editor-split{display:grid;grid-template-columns:1fr 1fr;}
+.pane-label{font-size:10px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;padding:7px 13px;border-bottom:1px solid var(--border);}
+.code-editor{width:100%;min-height:180px;background:#080810;color:#a8a8f8;font-family:var(--mono);font-size:12px;border:none;outline:none;padding:13px;resize:vertical;line-height:1.8;tab-size:2;}
+.preview-frame{min-height:180px;padding:13px;background:#fff;color:#333;font-family:sans-serif;font-size:13px;border-left:1px solid var(--border);overflow:auto;}
+.ch-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.hint-btn{padding:6px 13px;font-size:12px;font-family:var(--mono);background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;transition:all .2s;}
+.hint-btn:hover{border-color:var(--amber);color:var(--amber);}
+.verify-btn{padding:8px 22px;background:var(--accent);color:#fff;font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:1px;border:none;border-radius:8px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.verify-btn:hover{background:#9590e8;box-shadow:var(--glow);}
+.feedback{padding:10px 16px;font-size:12px;font-family:var(--mono);display:none;align-items:flex-start;gap:8px;flex-wrap:wrap;line-height:1.6;}
+.feedback.show{display:flex;}
+.feedback.ok{background:rgba(29,158,117,0.1);border-top:1px solid rgba(29,158,117,0.3);color:var(--accent2);}
+.feedback.err{background:rgba(216,90,48,0.08);border-top:1px solid rgba(216,90,48,0.25);color:#e8856a;}
+.xp-popup-wrap{position:relative;}
+.xp-pop{position:absolute;bottom:110%;right:0;background:var(--accent);color:#fff;font-family:var(--display);font-size:13px;font-weight:700;padding:5px 13px;border-radius:20px;white-space:nowrap;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
+.xp-pop.show{opacity:1;transform:translateY(0);}
+
+/* COMPLETED BANNER */
+.completed-banner{background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.3);border-radius:8px;padding:12px 16px;font-family:var(--mono);font-size:13px;color:var(--accent2);display:flex;align-items:center;gap:10px;}
+
+/* ═══ TEORÍA SECTION ═══ */
+#teoria{padding:28px 20px 60px;max-width:920px;margin:0 auto;}
+.section-heading{font-family:var(--display);font-size:26px;font-weight:900;color:var(--text);margin-bottom:6px;}
+.section-sub{font-size:13px;color:var(--muted);font-family:var(--mono);margin-bottom:20px;}
+.concept-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:20px;}
+.concept-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;}
+.concept-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--glow);}
+.concept-card.selected{border-color:var(--accent);background:rgba(127,119,221,0.06);}
+.cc-header{padding:13px;border-bottom:1px solid var(--border);}
+.cc-tag{font-family:var(--mono);font-size:11px;color:var(--accent);background:rgba(127,119,221,0.1);padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:7px;}
+.cc-title{font-size:13px;font-weight:600;color:var(--text);}
+.cc-body{padding:10px 13px;font-size:11px;color:var(--muted);line-height:1.6;font-family:var(--mono);}
+.teoria-detail{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
+.td-title{font-family:var(--display);font-size:17px;font-weight:700;color:var(--accent);margin-bottom:10px;}
+.td-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px;}
+.td-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.mini-editor{background:#080810;border:1px solid rgba(127,119,221,0.2);border-radius:8px;padding:12px;font-family:var(--mono);font-size:12px;color:#a8a8f8;line-height:1.8;width:100%;min-height:110px;resize:vertical;outline:none;transition:border-color .2s;}
+.mini-editor:focus{border-color:var(--accent);}
+.mini-preview{background:#fff;border-radius:8px;padding:12px;color:#222;font-size:13px;min-height:110px;overflow:auto;}
+.run-btn{margin-top:8px;padding:6px 16px;background:var(--accent2);color:#fff;font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:1px;border:none;border-radius:6px;cursor:pointer;text-transform:uppercase;}
+.run-btn:hover{opacity:.85;}
+
+/* ═══ ARENA ═══ */
+#arena{padding:28px 20px 60px;max-width:1020px;margin:0 auto;}
+.arena-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:13px;margin-top:18px;}
+.reto-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;}
+.reto-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:var(--glow);}
+.reto-card.rc-locked{opacity:.5;cursor:not-allowed;}
+.reto-card.rc-locked:hover{transform:none;box-shadow:none;}
+.reto-card.rc-done{border-color:rgba(29,158,117,0.4);}
+.reto-top{padding:16px;}
+.reto-diff{font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:6px;display:inline-block;margin-bottom:10px;}
+.d-easy{background:rgba(29,158,117,0.12);color:var(--accent2);}
+.d-med{background:rgba(239,159,39,0.12);color:var(--amber);}
+.d-hard{background:rgba(216,90,48,0.12);color:var(--danger);}
+.reto-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.reto-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.reto-bottom{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid var(--border);}
+.reto-xp{font-size:12px;color:var(--accent);font-family:var(--mono);font-weight:700;}
+.reto-type{font-size:11px;color:var(--muted);font-family:var(--mono);}
+.lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,10,15,0.4);font-size:26px;}
+.done-overlay{position:absolute;top:10px;right:10px;background:rgba(29,158,117,0.2);border:1px solid rgba(29,158,117,0.4);border-radius:20px;padding:2px 10px;font-size:10px;color:var(--accent2);font-family:var(--mono);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);z-index:2000;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:920px;max-height:90vh;overflow-y:auto;animation:modalIn .25s ease;}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--border);}
+.modal-title{font-family:var(--display);font-size:15px;font-weight:700;color:var(--accent);}
+.modal-close{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--muted);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.modal-close:hover{background:rgba(216,90,48,0.15);color:var(--danger);border-color:var(--danger);}
+.modal-body{padding:20px;}
+.modal-desc{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:14px;font-family:var(--mono);white-space:pre-wrap;}
+.modal-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.modal-footer{padding:13px 22px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.score-display{font-family:var(--display);font-size:22px;font-weight:900;color:var(--accent2);}
+.timer-badge{font-family:var(--mono);font-size:12px;color:var(--amber);}
+
+/* ═══ PROGRESO ═══ */
+#progreso{padding:28px 20px 60px;max-width:920px;margin:0 auto;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:13px;margin:18px 0;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;}
+.stat-num{font-family:var(--display);font-size:34px;font-weight:900;margin-bottom:4px;}
+.stat-label{font-size:11px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;}
+.s-xp{color:var(--accent);} .s-coins{color:var(--amber);} .s-streak{color:var(--pink);} .s-missions{color:var(--accent2);}
+.prog-title{font-family:var(--display);font-size:15px;font-weight:700;color:var(--text);margin:22px 0 10px;}
+.level-progress{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:8px;}
+.lp-header{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;}
+.lp-name{font-size:13px;font-weight:600;color:var(--text);}
+.lp-pct{font-size:12px;font-family:var(--mono);color:var(--accent);}
+.lp-bar{height:4px;background:rgba(127,119,221,0.1);}
+.lp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .8s ease;}
+.ranks-row{display:flex;overflow-x:auto;padding-bottom:8px;gap:0;}
+.rank-node{text-align:center;flex-shrink:0;width:100px;position:relative;}
+.rank-node::after{content:'';position:absolute;top:19px;left:60%;right:0;height:2px;background:var(--border);}
+.rank-node:last-child::after{display:none;}
+.rank-node.rn-done::after{background:var(--accent);}
+.rn-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;margin:0 auto 7px;border:2px solid var(--border);background:var(--card);}
+.rank-node.rn-done .rn-icon{border-color:var(--accent);background:rgba(127,119,221,0.15);}
+.rank-node.rn-cur .rn-icon{border-color:var(--accent2);background:rgba(29,158,117,0.15);box-shadow:0 0 12px rgba(29,158,117,0.3);}
+.rn-name{font-size:10px;color:var(--muted);font-family:var(--mono);}
+.rn-xp{font-size:9px;color:var(--accent);font-family:var(--mono);margin-top:2px;}
+.all-badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:10px;margin-top:12px;}
+.ab-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;transition:all .2s;}
+.ab-card.ab-earned{border-color:var(--accent);}
+.ab-card:hover{transform:translateY(-2px);}
+.ab-icon{font-size:26px;margin-bottom:5px;}
+.ab-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.ab-desc{font-size:10px;color:var(--muted);font-family:var(--mono);line-height:1.4;}
+.ab-card.ab-locked{opacity:.35;filter:grayscale(.7);}
+
+/* CELEBRATION */
+.celebration{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:3000;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.celebration.show{display:flex;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.cel-emoji{font-size:74px;animation:bounce .5s ease infinite alternate;margin-bottom:14px;}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+.cel-title{font-family:var(--display);font-size:34px;font-weight:900;color:var(--accent);margin-bottom:6px;}
+.cel-xp{font-family:var(--display);font-size:22px;font-weight:700;color:var(--accent2);margin-bottom:20px;}
+.cel-confetti{position:absolute;inset:0;pointer-events:none;}
+.confetti-piece{position:absolute;width:7px;height:7px;border-radius:2px;animation:cffall 2s ease-in forwards;}
+@keyframes cffall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.cel-close-btn{padding:11px 28px;background:var(--accent);color:#fff;font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:1px;border:none;border-radius:8px;cursor:pointer;text-transform:uppercase;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;z-index:4000;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:11px 16px;font-size:13px;font-family:var(--mono);color:var(--text);transform:translateY(80px);opacity:0;transition:all .3s;max-width:300px;}
+.toast.show{transform:none;opacity:1;}
+.toast.tok{border-color:rgba(29,158,117,.5);}
+.toast.terr{border-color:rgba(216,90,48,.5);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:rgba(127,119,221,.3);border-radius:3px;}
+
+/* Responsive */
+@media(max-width:700px){
+  .missions-layout{grid-template-columns:1fr;}
+  .concept-grid,.td-grid,.editor-split,.modal-split{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<div class="grid-bg"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">HTML<span>Quest</span></div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  <div class="loader-text" id="ltxt">Iniciando academia hacker...</div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="goTo('inicio')">HTML<span>Quest</span></div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="goTo('inicio')" id="nl-inicio">Inicio</button>
+    <button class="nav-link" onclick="goTo('misiones')" id="nl-misiones">Misiones</button>
+    <button class="nav-link" onclick="goTo('teoria')" id="nl-teoria">Teoría</button>
+    <button class="nav-link" onclick="goTo('arena')" id="nl-arena">Arena</button>
+    <button class="nav-link" onclick="goTo('progreso')" id="nl-progreso">Progreso</button>
+  </div>
+  <div class="nav-right">
+    <div class="xp-pill">⚡ <span class="val" id="nav-xp">0</span> XP</div>
+    <div class="coins-pill">🪙 <span class="val" id="nav-coins">0</span></div>
+    <div class="avatar-btn" onclick="goTo('progreso')">A</div>
+  </div>
+</nav>
+
+<div class="app">
+
+<!-- ══════ INICIO ══════ -->
+<section class="section active" id="inicio">
+  <div style="min-height:calc(100vh - 58px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;">
+    <div class="hero-badge">◈ Academia Hacker · Temporada 1 activa</div>
+    <h1 class="hero-title"><span class="l1">Aprende a hacer</span><span class="l2">HTML Quest</span></h1>
+    <p class="hero-sub">Construye sitios web reales resolviendo misiones, ganando XP y desbloqueando poderes de desarrollador.</p>
+    <div class="hero-stats">
+      <div><div class="hstat-num">6</div><div class="hstat-lbl">Niveles</div></div>
+      <div><div class="hstat-num">24</div><div class="hstat-lbl">Misiones</div></div>
+      <div><div class="hstat-num">20</div><div class="hstat-lbl">Badges</div></div>
+      <div><div class="hstat-num">∞</div><div class="hstat-lbl">XP</div></div>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="goTo('misiones')">▶ Jugar ahora</button>
+      <button class="btn-outline" onclick="goTo('teoria')">Biblioteca</button>
+      <button class="btn-outline" onclick="goTo('arena')">Arena de retos</button>
+    </div>
+    <div class="terminal-window">
+      <div class="terminal-bar">
+        <div class="tdot tred"></div><div class="tdot tyellow"></div><div class="tdot tgreen"></div>
+        <div class="ttitle">laboratorio_xr/index.html — misión activa</div>
+      </div>
+      <div class="terminal-body">
+<span class="tc">&lt;!-- Misión 3: Reconstruye el laboratorio --&gt;</span>
+<span class="tt">&lt;html</span> <span class="ta">lang</span>=<span class="tv">"es"</span><span class="tt">&gt;</span>
+  <span class="tt">&lt;head&gt;&lt;title&gt;</span><span class="tx">Laboratorio XR</span><span class="tt">&lt;/title&gt;&lt;/head&gt;</span>
+  <span class="tt">&lt;body&gt;</span>
+    <span class="tt">&lt;h1&gt;</span><span class="tx">Sistema restaurado ✓</span><span class="tt">&lt;/h1&gt;</span>
+    <span class="tt">&lt;img</span> <span class="ta">src</span>=<span class="tv">"lab.jpg"</span> <span class="ta">alt</span>=<span class="tv">"Lab"</span><span class="tt">&gt;</span>
+    <span class="tt">&lt;a</span> <span class="ta">href</span>=<span class="tv">"https://lab.edu"</span><span class="tt">&gt;</span><span class="tx">Acceder</span><span class="tt">&lt;/a&gt;</span>
+  <span class="tt">&lt;/body&gt;</span>
+<span class="tt">&lt;/html&gt;</span><span class="tcursor"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ MISIONES ══════ -->
+<section class="section" id="misiones">
+  <div style="max-width:1120px;margin:0 auto;padding:24px 20px 60px;">
+    <div class="event-banner">
+      <div class="event-icon">⚡</div>
+      <div><div class="event-name">Hackathon de fin de semana activo</div><div class="event-desc">Completa 3 misiones antes del domingo y gana badge exclusivo</div></div>
+      <div class="event-xp-badge">2× XP</div>
+    </div>
+    <div class="missions-layout">
+      <!-- SIDEBAR -->
+      <div>
+        <div class="sidebar-card">
+          <div class="sc-title">Misiones</div>
+          <div id="missions-list"></div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sc-title">Tu rango</div>
+          <div class="rank-display">
+            <div class="rank-name" id="rank-name-disp">⚡ Aprendiz</div>
+            <div class="rank-next" id="rank-next-disp">Siguiente: Dev Jr. (500 XP)</div>
+            <div class="rank-bar"><div class="rank-fill" id="rank-fill" style="width:0%"></div></div>
+            <div class="rank-nums"><span id="rank-cur-xp">0 XP</span><span id="rank-target-xp">500 XP</span></div>
+          </div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sc-title">Logros recientes</div>
+          <div class="badges-grid" id="sidebar-badges"></div>
+        </div>
+      </div>
+      <!-- MISSION PANEL -->
+      <div class="mission-panel" id="mission-panel"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ TEORIA ══════ -->
+<section class="section" id="teoria">
+  <div style="max-width:920px;margin:0 auto;padding:28px 20px 60px;">
+    <div class="section-heading">Biblioteca de conceptos</div>
+    <div class="section-sub">Selecciona un concepto para estudiarlo con editor en vivo</div>
+    <div class="concept-cards" id="concept-cards"></div>
+    <div class="teoria-detail" id="teoria-detail" style="display:none;">
+      <div id="td-content"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ ARENA ══════ -->
+<section class="section" id="arena">
+  <div style="max-width:1020px;margin:0 auto;padding:28px 20px 60px;">
+    <div class="section-heading">Arena de retos</div>
+    <div class="section-sub" style="font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:14px;">Pon a prueba tus habilidades · completa misiones para desbloquear más</div>
+    <div class="event-banner">
+      <div class="event-icon">🏆</div>
+      <div><div class="event-name">Reto relámpago — activo ahora</div><div class="event-desc">Complétalo en menos de 60 segundos para ganar el badge "Velocista"</div></div>
+      <div class="event-xp-badge">+200 XP</div>
+    </div>
+    <div class="arena-grid" id="arena-grid"></div>
+  </div>
+</section>
+
+<!-- ══════ PROGRESO ══════ -->
+<section class="section" id="progreso">
+  <div style="max-width:920px;margin:0 auto;padding:28px 20px 60px;">
+    <div class="section-heading">Tu progreso</div>
+    <div class="section-sub" style="font-family:var(--mono);font-size:13px;color:var(--muted);">Estadísticas, rangos y logros</div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num s-xp" id="p-xp">0</div><div class="stat-label">XP total</div></div>
+      <div class="stat-card"><div class="stat-num s-coins" id="p-coins">0</div><div class="stat-label">Monedas</div></div>
+      <div class="stat-card"><div class="stat-num s-streak">🔥 <span id="p-streak">0</span></div><div class="stat-label">Días seguidos</div></div>
+      <div class="stat-card"><div class="stat-num s-missions"><span id="p-missions">0</span>/24</div><div class="stat-label">Misiones</div></div>
+    </div>
+    <div class="prog-title">Progreso por nivel</div>
+    <div id="level-bars"></div>
+    <div class="prog-title">Camino de rangos</div>
+    <div class="ranks-row" id="ranks-row"></div>
+    <div class="prog-title">Todos los logros</div>
+    <div class="all-badges" id="all-badges"></div>
+  </div>
+</section>
+</div>
+
+<!-- MODAL RETO -->
+<div class="modal-overlay" id="reto-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Reto</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-split">
+        <div>
+          <div class="pane-label">Tu código</div>
+          <textarea class="code-editor" id="modal-code" style="min-height:220px;" spellcheck="false" oninput="liveRender('modal-code','modal-preview')"></textarea>
+        </div>
+        <div>
+          <div class="pane-label" style="border-left:1px solid var(--border)">Preview en vivo</div>
+          <div class="preview-frame" id="modal-preview" style="min-height:220px;border-left:1px solid var(--border)"><span style="color:#999;font-size:12px">Preview...</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="hint-btn" onclick="modalHint()">💡 Pista</button>
+        <span class="timer-badge" id="modal-timer"></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="score-display" id="modal-score">—</div>
+        <button class="verify-btn" onclick="verifyModal()">Verificar →</button>
+      </div>
+    </div>
+    <div class="feedback" id="modal-feedback"></div>
+  </div>
+</div>
+
+<!-- CELEBRATION -->
+<div class="celebration" id="celebration">
+  <div class="cel-confetti" id="cel-confetti"></div>
+  <div class="cel-emoji">🎉</div>
+  <div class="cel-title">¡Misión completada!</div>
+  <div class="cel-xp" id="cel-xp-text">+150 XP</div>
+  <button class="cel-close-btn" onclick="closeCel()">Continuar →</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════
+const G = {
+  xp: 0, coins: 0, streak: 1,
+  completedMissions: [],
+  completedRetos: [],
+  earnedBadges: [],
+  currentMission: 'M1',
+  hintUsed: false,
+  missionsCompleted: 0,
+};
+
+// ═══════════════════════════════════
+// MISSION DATA — todas las misiones
+// ═══════════════════════════════════
+const MISSIONS = [
+  {
+    id:'M1', level:1, icon:'🏗️', title:'La estructura base',
+    tags:'html · head · body',
+    story:'El servidor del laboratorio fue reiniciado y perdió toda su estructura. La página está en blanco total. Necesitas reconstruir el esqueleto básico de HTML desde cero.',
+    mission:'Reconstruye la estructura básica: <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code> con un <code>&lt;title&gt;</code>, y <code>&lt;body&gt;</code> con al menos un <code>&lt;h1&gt;</code>.',
+    challenge:'Crea la estructura base de una página HTML completa con head, title y body.',
+    xp:100, coins:15,
+    theory:[
+      { label:'html', desc:'La etiqueta <code>&lt;html&gt;</code> es el contenedor raíz de toda página web. Todo el contenido HTML debe ir dentro de ella. El atributo <code>lang</code> indica el idioma de la página.',
+        code:'&lt;html lang="es"&gt;\n  ...\n&lt;/html&gt;', preview:'<div style="border:2px dashed #ccc;padding:8px;border-radius:4px;font-size:11px;text-align:center;color:#666">Contenedor raíz HTML</div>' },
+      { label:'head', desc:'El <code>&lt;head&gt;</code> contiene información sobre la página que no se muestra en pantalla: título, metadatos, links a CSS, etc.',
+        code:'&lt;head&gt;\n  &lt;meta charset="UTF-8"&gt;\n  &lt;title&gt;Mi página&lt;/title&gt;\n&lt;/head&gt;', preview:'<div style="font-size:11px;color:#555">Título en pestaña: <strong>Mi página</strong><br><br><em style="color:#999">No visible en el cuerpo</em></div>' },
+      { label:'body', desc:'El <code>&lt;body&gt;</code> contiene todo el contenido visible de la página: textos, imágenes, links, botones, etc.',
+        code:'&lt;body&gt;\n  &lt;h1&gt;Hola mundo&lt;/h1&gt;\n  &lt;p&gt;Bienvenido.&lt;/p&gt;\n&lt;/body&gt;', preview:'<h1 style="font-size:18px;margin:0 0 6px">Hola mundo</h1><p style="font-size:12px;color:#555;margin:0">Bienvenido.</p>' },
+      { label:'DOCTYPE', desc:'<code>&lt;!DOCTYPE html&gt;</code> no es una etiqueta HTML sino una declaración que le dice al navegador que use el estándar HTML5 moderno. Siempre va en la primera línea.',
+        code:'&lt;!DOCTYPE html&gt;\n&lt;html lang="es"&gt;\n  &lt;head&gt;...&lt;/head&gt;\n  &lt;body&gt;...&lt;/body&gt;\n&lt;/html&gt;', preview:'<div style="background:#f0f9f0;padding:8px;border-radius:4px;font-size:11px;color:#1d9e75;font-family:monospace">✓ HTML5 detectado</div>' },
+    ],
+    validate(code){
+      const c=code.toLowerCase();
+      return check([
+        {ok:c.includes('<html'),msg:'Falta la etiqueta <html>'},
+        {ok:c.includes('</html>'),msg:'Falta cerrar </html>'},
+        {ok:c.includes('<head'),msg:'Falta la etiqueta <head>'},
+        {ok:c.includes('<title'),msg:'Falta <title> dentro de <head>'},
+        {ok:c.includes('<body'),msg:'Falta la etiqueta <body>'},
+        {ok:c.includes('<h1'),msg:'Añade un <h1> con el título de la página'},
+      ]);
+    },
+    hint:'<!DOCTYPE html>\n<html lang="es">\n  <head>\n    <meta charset="UTF-8">\n    <title>Laboratorio XR</title>\n  </head>\n  <body>\n    <h1>Sistema Restaurado</h1>\n    <p>El laboratorio está de vuelta.</p>\n  </body>\n</html>'
+  },
+  {
+    id:'M2', level:2, icon:'📰', title:'Señales visuales',
+    tags:'h1-h6 · p · strong · em',
+    story:'El periódico digital del laboratorio perdió toda su jerarquía visual. Los artículos están mezclados sin títulos ni párrafos. El equipo no puede leer nada.',
+    mission:'Usa encabezados <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, párrafos <code>&lt;p&gt;</code>, y al menos un <code>&lt;strong&gt;</code> para dar jerarquía al contenido.',
+    challenge:'Reconstruye la portada del periódico del laboratorio con al menos: 1 h1, 2 h2, 3 párrafos y 1 texto en negrita.',
+    xp:120, coins:18,
+    theory:[
+      { label:'h1-h6', desc:'Los encabezados van de <code>&lt;h1&gt;</code> (el más importante) a <code>&lt;h6&gt;</code> (el menos). Crean jerarquía visual y son clave para el SEO. Solo debe haber un <code>&lt;h1&gt;</code> por página.',
+        code:'&lt;h1&gt;Título principal&lt;/h1&gt;\n&lt;h2&gt;Subtítulo&lt;/h2&gt;\n&lt;h3&gt;Sección&lt;/h3&gt;\n&lt;h4&gt;Subsección&lt;/h4&gt;', preview:'<h1 style="font-size:20px;margin:0 0 4px">Título principal</h1><h2 style="font-size:15px;font-weight:normal;margin:0 0 3px;color:#444">Subtítulo</h2><h3 style="font-size:12px;font-weight:600;margin:0 0 2px;color:#666">Sección</h3><h4 style="font-size:11px;font-weight:normal;margin:0;color:#888">Subsección</h4>' },
+      { label:'p', desc:'La etiqueta <code>&lt;p&gt;</code> define un párrafo. El navegador añade espacio antes y después automáticamente. Siempre debe tener etiqueta de cierre <code>&lt;/p&gt;</code>.',
+        code:'&lt;p&gt;Este es el primer párrafo.&lt;/p&gt;\n&lt;p&gt;Este es el segundo párrafo.&lt;/p&gt;', preview:'<p style="font-size:12px;margin:0 0 8px">Este es el primer párrafo.</p><p style="font-size:12px;margin:0">Este es el segundo párrafo.</p>' },
+      { label:'strong/em', desc:'<code>&lt;strong&gt;</code> pone texto en <strong>negrita</strong> (importante). <code>&lt;em&gt;</code> pone texto en <em>cursiva</em> (énfasis). Son semánticas: le dicen al navegador el significado, no solo el estilo.',
+        code:'&lt;p&gt;El &lt;strong&gt;reactor&lt;/strong&gt;\n  está &lt;em&gt;activo&lt;/em&gt;.&lt;/p&gt;', preview:'<p style="font-size:13px;margin:0">El <strong>reactor</strong> está <em>activo</em>.</p>' },
+      { label:'br / hr', desc:'<code>&lt;br&gt;</code> hace un salto de línea (sin espacio de párrafo). <code>&lt;hr&gt;</code> dibuja una línea horizontal divisoria. Ambas son etiquetas vacías (sin cierre).',
+        code:'&lt;p&gt;Línea uno&lt;br&gt;Línea dos&lt;/p&gt;\n&lt;hr&gt;\n&lt;p&gt;Nueva sección&lt;/p&gt;', preview:'<p style="font-size:12px;margin:0 0 6px">Línea uno<br>Línea dos</p><hr style="margin:6px 0"><p style="font-size:12px;margin:0">Nueva sección</p>' },
+    ],
+    validate(code){
+      const c=code.toLowerCase();
+      return check([
+        {ok:c.includes('<h1'),msg:'Falta el título principal <h1>'},
+        {ok:c.includes('</h1>'),msg:'Cierra tu <h1> con </h1>'},
+        {ok:(c.match(/<h2/g)||[]).length>=2,msg:'Añade al menos 2 subtítulos <h2>'},
+        {ok:(c.match(/<p/g)||[]).length>=3,msg:'Añade al menos 3 párrafos <p>'},
+        {ok:c.includes('<strong') || c.includes('<b>'),msg:'Añade texto en negrita con <strong>'},
+        {ok:c.includes('</p>'),msg:'Cierra tus párrafos con </p>'},
+      ]);
+    },
+    hint:'<h1>Periódico del Laboratorio XR</h1>\n<h2>Noticias de hoy</h2>\n<p>El reactor de fusión ha sido <strong>reactivado</strong> con éxito.</p>\n<p>El equipo científico trabajó durante 48 horas sin parar.</p>\n<h2>Clima en la base</h2>\n<p>Se esperan <em>lluvias de fotones</em> para esta tarde.</p>'
+  },
+  {
+    id:'M3', level:3, icon:'🖼️', title:'Medios y enlaces',
+    tags:'img · a · href · alt',
+    story:'El sitio del laboratorio fue hackeado. Todas las imágenes y los links de navegación desaparecieron. El equipo no puede acceder a ningún recurso visual ni navegar entre páginas.',
+    mission:'Reconstruye la sección de medios usando <code>&lt;img&gt;</code> con src y alt, y al menos un <code>&lt;a&gt;</code> con href.',
+    challenge:'El sitio debe tener al menos 1 imagen (con src y alt) y 1 link (con href no vacío) para restaurar el sistema.',
+    xp:150, coins:22,
+    theory:[
+      { label:'img', desc:'La etiqueta <code>&lt;img&gt;</code> inserta una imagen. Es vacía (sin cierre). El atributo <code>src</code> indica la URL de la imagen y <code>alt</code> la describe (esencial para accesibilidad y cuando la imagen no carga).',
+        code:'&lt;img\n  src="foto.jpg"\n  alt="Descripción"\n  width="300"\n&gt;', preview:'<div style="display:flex;align-items:center;justify-content:center;min-height:80px;background:#f5f5f5;border-radius:6px"><div style="width:90px;height:60px;background:#ddd;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px">🖼️</div></div>' },
+      { label:'a (link)', desc:'La etiqueta <code>&lt;a&gt;</code> crea hipervínculos. El atributo <code>href</code> define la URL de destino. Con <code>target="_blank"</code> se abre en pestaña nueva. El texto entre las etiquetas es lo que el usuario ve.',
+        code:'&lt;a href="https://lab.edu"\n   target="_blank"&gt;\n  Visitar laboratorio\n&lt;/a&gt;', preview:'<div style="padding:10px"><a href="#" style="color:#7f77dd;font-size:14px;text-decoration:underline">Visitar laboratorio →</a></div>' },
+      { label:'atributos', desc:'Los atributos añaden información extra a las etiquetas. Siempre van en la etiqueta de apertura con el formato <code>nombre="valor"</code>. Algunos son obligatorios (src en img), otros opcionales (width, height, target).',
+        code:'&lt;!-- img --&gt;\nsrc="url"  → obligatorio\nalt="text" → obligatorio\nwidth="n"  → opcional\n\n&lt;!-- a --&gt;\nhref="url" → obligatorio\ntarget="_blank" → opcional', preview:'<table style="font-size:11px;border-collapse:collapse"><tr><td style="padding:3px 8px;color:#7f77dd;font-weight:bold">src</td><td style="padding:3px 8px;color:#666">URL de la imagen</td></tr><tr><td style="padding:3px 8px;color:#7f77dd;font-weight:bold">alt</td><td style="padding:3px 8px;color:#666">Texto alternativo</td></tr><tr><td style="padding:3px 8px;color:#7f77dd;font-weight:bold">href</td><td style="padding:3px 8px;color:#666">URL del link</td></tr><tr><td style="padding:3px 8px;color:#7f77dd;font-weight:bold">target</td><td style="padding:3px 8px;color:#666">_blank = nueva pestaña</td></tr></table>' },
+      { label:'combinar', desc:'Puedes poner una imagen dentro de un link para crear un banner o logo clicable. Este patrón es muy común en sitios reales: logos que llevan al inicio, imágenes de productos.',
+        code:'&lt;a href="pagina.html"&gt;\n  &lt;img src="logo.png"\n       alt="Ir a inicio"\n       width="120"&gt;\n&lt;/a&gt;', preview:'<a href="#" style="display:inline-block;background:#eee;padding:8px;border-radius:6px"><div style="width:70px;height:45px;background:#ddd;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:18px">🔗</div><div style="font-size:10px;text-align:center;color:#666;margin-top:3px">clic aquí</div></a>' },
+    ],
+    validate(code){
+      const c=code.toLowerCase();
+      const imgMatch=c.match(/<img([^>]*)>/);
+      return check([
+        {ok:!!imgMatch,msg:'Añade una etiqueta <img>'},
+        {ok:imgMatch&&imgMatch[1].includes('src='),msg:'Tu <img> necesita el atributo src="url"'},
+        {ok:imgMatch&&imgMatch[1].includes('alt='),msg:'Tu <img> necesita alt="descripción" (accesibilidad)'},
+        {ok:c.includes('<a ') || c.includes('<a\n'),msg:'Añade una etiqueta <a> para crear un link'},
+        {ok:(()=>{const m=c.match(/href="([^"]*)"/);return m&&m[1].length>1;})(),msg:'El href no puede estar vacío: href="https://..."'},
+        {ok:/<a[^>]*>[^<]+<\/a>/i.test(code),msg:'Escribe texto visible entre <a> y </a>'},
+      ]);
+    },
+    hint:'<h1>Laboratorio XR</h1>\n<img src="https://placehold.co/300x150/0a0a0f/7f77dd?text=Lab+XR" alt="Foto del laboratorio" width="300">\n<p>Bienvenido al sistema de control.</p>\n<a href="https://laboratorio.edu" target="_blank">Acceder al portal →</a>'
+  },
+  {
+    id:'M4', level:4, icon:'🔘', title:'Botones y listas',
+    tags:'button · ul · ol · li',
+    story:'La tienda de equipamiento del laboratorio perdió su catálogo y sus botones de acción. El equipo no puede ordenar suministros ni ver el inventario disponible.',
+    mission:'Reconstruye el catálogo con una lista <code>&lt;ul&gt;</code> de al menos 4 elementos <code>&lt;li&gt;</code>, una lista ordenada <code>&lt;ol&gt;</code> y 2 botones <code>&lt;button&gt;</code>.',
+    challenge:'Crea un catálogo de equipamiento con lista no ordenada (productos), lista ordenada (pasos de compra) y botones de acción.',
+    xp:160, coins:24,
+    theory:[
+      { label:'ul (lista)', desc:'<code>&lt;ul&gt;</code> crea una lista no ordenada (con viñetas). Cada elemento de la lista es un <code>&lt;li&gt;</code>. Se usa cuando el orden no importa: listas de productos, características, menús.',
+        code:'&lt;ul&gt;\n  &lt;li&gt;Escafandra&lt;/li&gt;\n  &lt;li&gt;Reactor portátil&lt;/li&gt;\n  &lt;li&gt;Gafas HUD&lt;/li&gt;\n&lt;/ul&gt;', preview:'<ul style="font-size:12px;padding-left:18px;margin:0"><li>Escafandra</li><li>Reactor portátil</li><li>Gafas HUD</li></ul>' },
+      { label:'ol (numerada)', desc:'<code>&lt;ol&gt;</code> crea una lista ordenada (numerada). Se usa cuando el orden importa: instrucciones, pasos, clasificaciones.',
+        code:'&lt;ol&gt;\n  &lt;li&gt;Ingresar al portal&lt;/li&gt;\n  &lt;li&gt;Seleccionar equipo&lt;/li&gt;\n  &lt;li&gt;Confirmar pedido&lt;/li&gt;\n&lt;/ol&gt;', preview:'<ol style="font-size:12px;padding-left:18px;margin:0"><li>Ingresar al portal</li><li>Seleccionar equipo</li><li>Confirmar pedido</li></ol>' },
+      { label:'button', desc:'<code>&lt;button&gt;</code> crea un botón interactivo. El atributo <code>type</code> puede ser "button" (acción general), "submit" (enviar formulario) o "reset" (limpiar formulario).',
+        code:'&lt;button type="button"&gt;\n  Agregar al carrito\n&lt;/button&gt;\n\n&lt;button type="submit"&gt;\n  Confirmar pedido\n&lt;/button&gt;', preview:'<button style="padding:6px 12px;background:#7f77dd;color:#fff;border:none;border-radius:6px;font-size:12px;margin-right:6px;cursor:pointer">Agregar al carrito</button><button style="padding:6px 12px;background:#1d9e75;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer">Confirmar pedido</button>' },
+      { label:'li anidado', desc:'Las listas se pueden anidar para crear submenús o jerarquías. Pon un <code>&lt;ul&gt;</code> o <code>&lt;ol&gt;</code> dentro de un <code>&lt;li&gt;</code> para crear subelementos.',
+        code:'&lt;ul&gt;\n  &lt;li&gt;Equipos\n    &lt;ul&gt;\n      &lt;li&gt;Escafandras&lt;/li&gt;\n      &lt;li&gt;Reactores&lt;/li&gt;\n    &lt;/ul&gt;\n  &lt;/li&gt;\n&lt;/ul&gt;', preview:'<ul style="font-size:12px;padding-left:18px;margin:0"><li>Equipos<ul style="padding-left:16px;margin-top:3px"><li>Escafandras</li><li>Reactores</li></ul></li></ul>' },
+    ],
+    validate(code){
+      const c=code.toLowerCase();
+      return check([
+        {ok:c.includes('<ul'),msg:'Añade una lista no ordenada <ul>'},
+        {ok:(c.match(/<li/g)||[]).length>=4,msg:'Añade al menos 4 elementos <li> en tu lista'},
+        {ok:c.includes('</li>'),msg:'Cierra tus elementos con </li>'},
+        {ok:c.includes('<ol'),msg:'Añade una lista ordenada <ol> (pasos numerados)'},
+        {ok:(c.match(/<button/g)||[]).length>=2,msg:'Añade al menos 2 botones <button>'},
+        {ok:c.includes('</button>'),msg:'Cierra tus botones con </button>'},
+      ]);
+    },
+    hint:'<h1>Catálogo del Laboratorio</h1>\n<h2>Inventario disponible</h2>\n<ul>\n  <li>Escafandra espacial — $1200</li>\n  <li>Reactor portátil XR-9 — $4500</li>\n  <li>Gafas HUD v3 — $890</li>\n  <li>Guantes electromagnéticos — $340</li>\n</ul>\n<h2>Pasos para comprar</h2>\n<ol>\n  <li>Selecciona el equipo</li>\n  <li>Verifica disponibilidad</li>\n  <li>Confirma el pedido</li>\n</ol>\n<button type="button">Agregar al carrito</button>\n<button type="submit">Confirmar compra</button>'
+  },
+  {
+    id:'M5', level:5, icon:'📦', title:'Contenedores y estructura',
+    tags:'div · span · class · id',
+    story:'El cuartel general del laboratorio necesita reorganizarse. Los departamentos están mezclados sin ninguna estructura lógica. El director necesita que organices los módulos usando contenedores.',
+    mission:'Organiza el contenido usando <code>&lt;div&gt;</code> con atributos <code>class</code> e <code>id</code>. Crea al menos 3 secciones diferenciadas con estilos inline.',
+    challenge:'Crea 3 tarjetas de departamento usando divs con class e id, cada una con título, descripción y estilo diferente.',
+    xp:200, coins:28,
+    theory:[
+      { label:'div', desc:'<code>&lt;div&gt;</code> es un contenedor genérico de bloque. No tiene significado semántico propio pero sirve para agrupar y organizar contenido. Es la base del layout web.',
+        code:'&lt;div&gt;\n  &lt;h2&gt;Departamento A&lt;/h2&gt;\n  &lt;p&gt;Descripción...&lt;/p&gt;\n&lt;/div&gt;', preview:'<div style="border:1px dashed #ccc;padding:8px;border-radius:4px"><h2 style="font-size:13px;margin:0 0 4px">Departamento A</h2><p style="font-size:11px;margin:0;color:#666">Descripción...</p></div>' },
+      { label:'class / id', desc:'<code>class</code> define una categoría reutilizable (varios elementos pueden compartirla). <code>id</code> identifica un elemento único (solo uno por página). Ambos se usan para aplicar CSS y JavaScript.',
+        code:'&lt;div class="tarjeta"&gt;\n  Elemento 1\n&lt;/div&gt;\n&lt;div class="tarjeta" id="especial"&gt;\n  Elemento 2 — único\n&lt;/div&gt;', preview:'<div style="padding:6px 10px;background:#eee;border-radius:4px;font-size:11px;margin-bottom:5px">Elemento 1 · class="tarjeta"</div><div style="padding:6px 10px;background:#7f77dd;color:#fff;border-radius:4px;font-size:11px">Elemento 2 · id="especial"</div>' },
+      { label:'span', desc:'<code>&lt;span&gt;</code> es un contenedor genérico inline. Se usa para aplicar estilos o identificar partes específicas de texto sin romper el flujo del párrafo.',
+        code:'&lt;p&gt;El reactor\n  &lt;span style="color:red"&gt;\n    está en alerta\n  &lt;/span&gt;.\n&lt;/p&gt;', preview:'<p style="font-size:13px;margin:0">El reactor <span style="color:red;font-weight:bold">está en alerta</span>.</p>' },
+      { label:'style inline', desc:'El atributo <code>style</code> permite aplicar CSS directamente en una etiqueta. Útil para estilos únicos y rápidos. Para proyectos reales se recomienda usar clases CSS externas.',
+        code:'&lt;div style="background:#1a1a2e;\n            padding:16px;\n            border-radius:8px;\n            color:#7f77dd;"&gt;\n  Tarjeta oscura\n&lt;/div&gt;', preview:'<div style="background:#1a1a2e;padding:10px;border-radius:6px;color:#7f77dd;font-size:12px">Tarjeta oscura</div>' },
+    ],
+    validate(code){
+      const c=code.toLowerCase();
+      return check([
+        {ok:(c.match(/<div/g)||[]).length>=3,msg:'Necesitas al menos 3 contenedores <div>'},
+        {ok:c.includes('class='),msg:'Añade el atributo class="nombre" a tus divs'},
+        {ok:c.includes('id='),msg:'Añade el atributo id="nombre" para identificar un div único'},
+        {ok:c.includes('style='),msg:'Añade estilo inline (style="...") para diferenciar las tarjetas'},
+        {ok:(c.match(/<h2/g)||[]).length>=2,msg:'Cada sección debe tener un título <h2>'},
+        {ok:c.includes('</div>'),msg:'Cierra tus divs con </div>'},
+      ]);
+    },
+    hint:'<div id="departamentos">\n  <div class="tarjeta" style="background:#1a1a2e;padding:16px;border-radius:8px;margin-bottom:10px;">\n    <h2 style="color:#7f77dd">Ingeniería</h2>\n    <p style="color:#ccc">Diseño y construcción de reactores.</p>\n  </div>\n  <div class="tarjeta" style="background:#0f2a1e;padding:16px;border-radius:8px;margin-bottom:10px;">\n    <h2 style="color:#1d9e75">Ciencias</h2>\n    <p style="color:#ccc">Investigación y experimentos.</p>\n  </div>\n  <div class="tarjeta" id="seguridad" style="background:#2a1a0f;padding:16px;border-radius:8px;">\n    <h2 style="color:#ef9f27">Seguridad</h2>\n    <p style="color:#ccc">Protección y monitoreo.</p>\n  </div>\n</div>'
+  },
+  {
+    id:'M6', level:6, icon:'📋', title:'Formularios de acceso',
+    tags:'form · input · label · textarea',
+    story:'El portal de registro del laboratorio está completamente caído. Ningún nuevo agente puede unirse. El formulario de acceso necesita ser reconstruido urgentemente antes del lanzamiento.',
+    mission:'Construye el formulario de registro completo con <code>&lt;form&gt;</code>, campos de texto, email, contraseña, <code>&lt;textarea&gt;</code>, <code>&lt;select&gt;</code> y un botón de envío.',
+    challenge:'Crea el formulario de acceso al laboratorio con: nombre, email, contraseña, departamento (select) y mensaje (textarea).',
+    xp:250, coins:35,
+    theory:[
+      { label:'form', desc:'<code>&lt;form&gt;</code> agrupa todos los controles de entrada. El atributo <code>action</code> define a dónde enviar los datos y <code>method</code> cómo enviarlos (get o post).',
+        code:'&lt;form action="/registro"\n      method="post"&gt;\n  ... campos ...\n&lt;/form&gt;', preview:'<div style="border:1px dashed #7f77dd;padding:10px;border-radius:6px;font-size:11px;color:#666;text-align:center">Contenedor de formulario</div>' },
+      { label:'input', desc:'<code>&lt;input&gt;</code> es el campo de entrada más versátil. El <code>type</code> define qué tipo de dato acepta: text, email, password, number, checkbox, radio.',
+        code:'&lt;input type="text"\n       placeholder="Tu nombre"\n       name="nombre"&gt;\n&lt;input type="email"\n       placeholder="tu@email.com"&gt;\n&lt;input type="password"\n       placeholder="Contraseña"&gt;', preview:'<div style="display:flex;flex-direction:column;gap:5px"><input type="text" placeholder="Tu nombre" style="border:1px solid #ccc;padding:5px 8px;border-radius:4px;font-size:11px"><input type="email" placeholder="tu@email.com" style="border:1px solid #ccc;padding:5px 8px;border-radius:4px;font-size:11px"><input type="password" placeholder="••••••••" style="border:1px solid #ccc;padding:5px 8px;border-radius:4px;font-size:11px"></div>' },
+      { label:'label', desc:'<code>&lt;label&gt;</code> describe un campo de entrada. Al hacer clic en el label, el campo asociado recibe el foco. Se asocian con <code>for="id-del-input"</code>.',
+        code:'&lt;label for="email"&gt;Email:&lt;/label&gt;\n&lt;input type="email"\n       id="email"\n       name="email"&gt;', preview:'<div style="font-size:12px"><label style="display:block;margin-bottom:4px;font-weight:600">Email:</label><input type="email" placeholder="tu@email.com" style="border:1px solid #ccc;padding:5px 8px;border-radius:4px;font-size:11px;width:160px"></div>' },
+      { label:'select/textarea', desc:'<code>&lt;select&gt;</code> crea un menú desplegable con opciones. <code>&lt;textarea&gt;</code> es un área de texto multilínea. Ambas tienen etiqueta de cierre.',
+        code:'&lt;select name="dept"&gt;\n  &lt;option&gt;Ingeniería&lt;/option&gt;\n  &lt;option&gt;Ciencias&lt;/option&gt;\n&lt;/select&gt;\n\n&lt;textarea rows="4"\n  placeholder="Mensaje..."&gt;\n&lt;/textarea&gt;', preview:'<div style="display:flex;flex-direction:column;gap:6px"><select style="border:1px solid #ccc;padding:4px;border-radius:4px;font-size:11px"><option>Ingeniería</option><option>Ciencias</option></select><textarea rows="3" placeholder="Mensaje..." style="border:1px solid #ccc;padding:5px;border-radius:4px;font-size:11px;resize:none"></textarea></div>' },
+    ],
+    validate(code){
+      const c=code.toLowerCase();
+      return check([
+        {ok:c.includes('<form'),msg:'Necesitas una etiqueta <form> como contenedor'},
+        {ok:c.includes('type="text"') || c.includes("type='text'"),msg:'Añade un campo de texto: <input type="text">'},
+        {ok:c.includes('type="email"') || c.includes("type='email'"),msg:'Añade un campo de email: <input type="email">'},
+        {ok:c.includes('type="password"') || c.includes("type='password'"),msg:'Añade un campo de contraseña: <input type="password">'},
+        {ok:c.includes('<textarea'),msg:'Añade un área de mensaje con <textarea>'},
+        {ok:c.includes('<button') || c.includes('type="submit"'),msg:'Añade un botón de envío'},
+      ]);
+    },
+    hint:'<h1>Portal de Acceso — Laboratorio XR</h1>\n<form action="/registro" method="post">\n  <label for="nombre">Nombre completo:</label><br>\n  <input type="text" id="nombre" name="nombre" placeholder="Tu nombre"><br><br>\n  <label for="email">Email científico:</label><br>\n  <input type="email" id="email" name="email" placeholder="agente@lab.edu"><br><br>\n  <label for="pass">Contraseña:</label><br>\n  <input type="password" id="pass" name="pass" placeholder="••••••••"><br><br>\n  <label for="dept">Departamento:</label><br>\n  <select id="dept" name="dept">\n    <option>Ingeniería</option>\n    <option>Ciencias</option>\n    <option>Seguridad</option>\n  </select><br><br>\n  <label for="msg">Motivo de registro:</label><br>\n  <textarea id="msg" name="msg" rows="4" placeholder="Cuéntanos por qué quieres unirte..."></textarea><br><br>\n  <button type="submit">Solicitar acceso →</button>\n</form>'
+  },
+];
+
+// ═══════════════════════════════════
+// HELPER: CHECK
+// ═══════════════════════════════════
+function check(rules){
+  const results=rules.map(r=>({...r,ok:Boolean(r.ok)}));
+  return {results, passed:results.filter(r=>r.ok).length, total:results.length};
+}
+
+// ═══════════════════════════════════
+// NAV
+// ═══════════════════════════════════
+function goTo(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const nl=document.getElementById('nl-'+id);
+  if(nl) nl.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════
+// LOADER
+// ═══════════════════════════════════
+const ltxts=['Iniciando academia hacker...','Cargando misiones...','Preparando el editor...','Conectando sistema...','¡Todo listo!'];
+let li=0;
+const ltInt=setInterval(()=>{li++;if(li<ltxts.length)document.getElementById('ltxt').textContent=ltxts[li];},360);
+setTimeout(()=>{
+  clearInterval(ltInt);
+  document.getElementById('loader').classList.add('hidden');
+  initParticles();
+  buildMissionsList();
+  loadMission('M1');
+  buildTeoria();
+  buildArena();
+  buildProgreso();
+},1900);
+
+// ═══════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════
+function initParticles(){
+  const w=document.getElementById('particles');
+  for(let i=0;i<22;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;animation-duration:${8+Math.random()*14}s;animation-delay:${Math.random()*12}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;background:${Math.random()>.5?'#7f77dd':'#1d9e75'};`;
+    w.appendChild(p);
+  }
+}
+
+// ═══════════════════════════════════
+// XP / COINS
+// ═══════════════════════════════════
+function gainXP(amount,hintUsed){
+  const earned=hintUsed?Math.round(amount*.7):amount;
+  G.xp+=earned; G.coins+=Math.round(earned/5); G.missionsCompleted++;
+  updateNavStats();
+  updateRankDisplay();
+  updateProgreso();
+  const pop=document.getElementById('xp-pop');
+  if(pop){pop.textContent='+'+earned+' XP ⚡';pop.classList.add('show');setTimeout(()=>pop.classList.remove('show'),2000);}
+  return earned;
+}
+function updateNavStats(){
+  document.getElementById('nav-xp').textContent=G.xp;
+  document.getElementById('nav-coins').textContent=G.coins;
+}
+const RANKS=[
+  {name:'🐣 Aprendiz',next:'Dev Jr.',min:0,max:500},
+  {name:'🔧 Dev Jr.',next:'Hacker Jr.',min:500,max:1000},
+  {name:'⚡ Hacker Jr.',next:'Hacker Pro',min:1000,max:2000},
+  {name:'🚀 Hacker Pro',next:'Maestro HTML',min:2000,max:4000},
+  {name:'🧠 Maestro HTML',next:'Arquitecto',min:4000,max:8000},
+  {name:'🏛️ Arquitecto',next:'Máximo',min:8000,max:16000},
+];
+function getCurrentRank(){return RANKS.find(r=>G.xp<r.max)||RANKS[RANKS.length-1];}
+function updateRankDisplay(){
+  const r=getCurrentRank();
+  const pct=Math.min(100,Math.round(((G.xp-r.min)/(r.max-r.min))*100));
+  const el=document.getElementById('rank-name-disp');
+  if(el)el.textContent=r.name;
+  const nx=document.getElementById('rank-next-disp');
+  if(nx)nx.textContent='Siguiente: '+r.next+' ('+r.max+' XP)';
+  const rf=document.getElementById('rank-fill');
+  if(rf)rf.style.width=pct+'%';
+  const cx=document.getElementById('rank-cur-xp');
+  if(cx)cx.textContent=G.xp+' XP';
+  const tx=document.getElementById('rank-target-xp');
+  if(tx)tx.textContent=r.max+' XP';
+}
+
+// ═══════════════════════════════════
+// TOAST
+// ═══════════════════════════════════
+let toastT;
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show t'+type;
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ═══════════════════════════════════
+// LIVE RENDER
+// ═══════════════════════════════════
+function liveRender(inId,outId){
+  const code=document.getElementById(inId)?.value||'';
+  const out=document.getElementById(outId);
+  if(!out)return;
+  const safe=code.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/on\w+="[^"]*"/gi,'').replace(/javascript:/gi,'');
+  out.innerHTML=safe||'<span style="color:#999;font-size:12px">Preview en vivo...</span>';
+}
+
+// ═══════════════════════════════════
+// BUILD MISSIONS LIST (sidebar)
+// ═══════════════════════════════════
+function buildMissionsList(){
+  const wrap=document.getElementById('missions-list');
+  wrap.innerHTML='';
+  MISSIONS.forEach(m=>{
+    const done=G.completedMissions.includes(m.id);
+    const active=G.currentMission===m.id;
+    const div=document.createElement('div');
+    div.id='mitem-'+m.id;
+    div.className='mission-item'+(done?' mi-done':'')+(active?' mi-active':'');
+    div.innerHTML=`
+      <div class="m-icon ${done?'ic-done':active?'ic-active':'ic-locked'}">${m.icon}</div>
+      <div><div class="m-title">${m.title}</div><div class="m-sub">${m.tags}</div></div>
+      <span class="m-badge ${done?'bd-done':active?'bd-active':'bd-locked'}">${done?'✓':active?'activa':'Nv.'+m.level}</span>`;
+    div.onclick=()=>selectMission(m.id);
+    wrap.appendChild(div);
+  });
+  buildSidebarBadges();
+}
+
+function selectMission(id){
+  G.currentMission=id;
+  G.hintUsed=false;
+  document.querySelectorAll('.mission-item').forEach(el=>{
+    const mid=el.id.replace('mitem-','');
+    el.classList.remove('mi-active');
+    if(G.completedMissions.includes(mid)) el.classList.add('mi-done'); else el.classList.remove('mi-done');
+  });
+  const cur=document.getElementById('mitem-'+id);
+  if(cur){cur.classList.add('mi-active');cur.classList.remove('mi-done');}
+  loadMission(id);
+}
+
+// ═══════════════════════════════════
+// LOAD MISSION INTO PANEL
+// ═══════════════════════════════════
+function loadMission(id){
+  const m=MISSIONS.find(x=>x.id===id);
+  if(!m)return;
+  const done=G.completedMissions.includes(id);
+  const panel=document.getElementById('mission-panel');
+  panel.innerHTML=`
+    <!-- HEADER -->
+    <div class="m-header">
+      <div class="phase-pills">
+        <div class="phase-pill pp-done">① Historia</div>
+        <div class="phase-pill ${done?'pp-done':'pp-active'}">② Teoría</div>
+        <div class="phase-pill ${done?'pp-done':'pp-inactive'}">③ Reto</div>
+      </div>
+      <div class="m-title-big">${m.icon} Misión ${m.level} — ${m.title}</div>
+      <div class="m-story">${m.story}</div>
+      <div class="story-box">🧑‍💻 <strong>Tu misión:</strong> ${m.mission}</div>
+    </div>
+
+    <!-- THEORY -->
+    <div class="theory-card">
+      <div class="theory-tabs" id="th-tabs-${id}">
+        ${m.theory.map((t,i)=>`<button class="theory-tab${i===0?' tactive':''}" onclick="showMissionTheory('${id}',${i},this)">${t.label}</button>`).join('')}
+      </div>
+      <div class="theory-body" id="th-body-${id}"></div>
+    </div>
+
+    <!-- CHALLENGE -->
+    ${done?`
+    <div class="completed-banner">✅ ¡Misión completada! Puedes practicar el editor cuando quieras.</div>
+    <div class="challenge-card">
+      <div class="ch-header"><div class="ch-title">📝 Práctica libre — ${m.title}</div><div class="ch-xp">+XP bonus</div></div>
+      <div class="editor-split">
+        <div>
+          <div class="pane-label">Tu código</div>
+          <textarea class="code-editor" id="ced-${id}" spellcheck="false" oninput="liveRender('ced-${id}','cprev-${id}')" placeholder="Practica aquí...">${m.hint||''}</textarea>
+        </div>
+        <div>
+          <div class="pane-label" style="border-left:1px solid var(--border)">Preview en vivo</div>
+          <div class="preview-frame" id="cprev-${id}"><span style="color:#999;font-size:12px">Preview...</span></div>
+        </div>
+      </div>
+      <div class="ch-footer"><span style="font-size:12px;color:var(--muted);font-family:var(--mono)">Modo práctica · sin límites</span></div>
+    </div>`:`
+    <div class="challenge-card">
+      <div class="ch-header">
+        <div class="ch-title">🎯 Reto: ${m.challenge}</div>
+        <div class="ch-xp">+${m.xp} XP</div>
+      </div>
+      <div class="editor-split">
+        <div>
+          <div class="pane-label">Tu código HTML</div>
+          <textarea class="code-editor" id="ced-${id}" spellcheck="false" oninput="liveRender('ced-${id}','cprev-${id}')" placeholder="Escribe tu HTML aquí..."></textarea>
+        </div>
+        <div>
+          <div class="pane-label" style="border-left:1px solid var(--border)">Preview en vivo</div>
+          <div class="preview-frame" id="cprev-${id}"><span style="color:#999;font-size:12px">Preview...</span></div>
+        </div>
+      </div>
+      <div class="ch-footer">
+        <button class="hint-btn" onclick="giveHint('${id}')">💡 Pista (−30% XP)</button>
+        <div class="xp-popup-wrap">
+          <div class="xp-pop" id="xp-pop">+${m.xp} XP ⚡</div>
+          <button class="verify-btn" onclick="verifyMission('${id}')">Verificar →</button>
+        </div>
+      </div>
+      <div class="feedback" id="fb-${id}"></div>
+    </div>`}
+  `;
+  showMissionTheory(id,0,document.querySelector(`#th-tabs-${id} .theory-tab`));
+  // if done, render hint in preview
+  if(done){setTimeout(()=>liveRender(`ced-${id}`,`cprev-${id}`),50);}
+}
+
+function showMissionTheory(missionId,idx,tabEl){
+  const m=MISSIONS.find(x=>x.id===missionId);
+  if(!m)return;
+  const t=m.theory[idx];
+  document.querySelectorAll(`#th-tabs-${missionId} .theory-tab`).forEach(b=>b.classList.remove('tactive'));
+  if(tabEl)tabEl.classList.add('tactive');
+  document.getElementById(`th-body-${missionId}`).innerHTML=`
+    <div class="desc-text">${t.desc}</div>
+    <div class="concept-grid">
+      <div><div class="concept-label">Código</div><div class="code-display" style="white-space:pre-wrap;word-break:break-all;">${t.code}</div></div>
+      <div><div class="concept-label">Preview</div><div class="preview-display">${t.preview}</div></div>
+    </div>`;
+}
+
+// ═══════════════════════════════════
+// HINT
+// ═══════════════════════════════════
+function giveHint(id){
+  G.hintUsed=true;
+  const m=MISSIONS.find(x=>x.id===id);
+  if(!m)return;
+  const ed=document.getElementById('ced-'+id);
+  if(ed){ed.value=m.hint||'';liveRender('ced-'+id,'cprev-'+id);}
+  showFeedback('fb-'+id,'💡 Pista aplicada. Personaliza el código y verifica. (La recompensa se reduce un 30%)','err');
+  showToast('💡 Pista aplicada','err');
+}
+
+// ═══════════════════════════════════
+// VERIFY MISSION
+// ═══════════════════════════════════
+function verifyMission(id){
+  const m=MISSIONS.find(x=>x.id===id);
+  if(!m)return;
+  const code=document.getElementById('ced-'+id)?.value||'';
+  const result=m.validate(code);
+  const score=Math.round((result.passed/result.total)*100);
+  if(score>=70){
+    if(!G.completedMissions.includes(id)){
+      G.completedMissions.push(id);
+      const earned=gainXP(m.xp,G.hintUsed);
+      checkBadges(id);
+      buildMissionsList();
+      // Unlock next mission indicator
+      const idx=MISSIONS.findIndex(x=>x.id===id);
+      if(idx<MISSIONS.length-1) G.currentMission=MISSIONS[idx+1].id;
+      setTimeout(()=>showCelebration(earned),400);
+    }
+    showFeedback('fb-'+id,`✅ ¡Perfecto! Puntaje: ${score}%. Misión completada.`,'ok');
+    // reload panel showing completed state
+    setTimeout(()=>loadMission(id),1200);
+  } else {
+    const failed=result.results.filter(r=>!r.ok).map(r=>r.msg).join(' · ');
+    showFeedback('fb-'+id,`❌ Puntaje: ${score}% — ${failed}`,'err');
+  }
+}
+
+// ═══════════════════════════════════
+// FEEDBACK
+// ═══════════════════════════════════
+function showFeedback(id,msg,type){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.textContent=msg; el.className='feedback show '+type;
+}
+
+// ═══════════════════════════════════
+// BADGES
+// ═══════════════════════════════════
+const BADGES_DATA=[
+  {id:'first',icon:'🚀',name:'Primer código',desc:'Primera misión completada',trigger:m=>G.completedMissions.length===1},
+  {id:'nohint',icon:'⚡',name:'Sin pistas',desc:'Completaste sin ayuda',trigger:m=>!G.hintUsed},
+  {id:'streak',icon:'🔥',name:'3 días seguidos',desc:'Racha de 3 días',trigger:m=>G.streak>=3},
+  {id:'half',icon:'🌟',name:'A mitad del camino',desc:'3 misiones completadas',trigger:m=>G.completedMissions.length>=3},
+  {id:'all',icon:'🏆',name:'Maestro HTML',desc:'Todas las misiones',trigger:m=>G.completedMissions.length>=6},
+  {id:'speed',icon:'🎯',name:'Velocista',desc:'Reto en menos de 60s',trigger:m=>false},
+  {id:'explorer',icon:'🧪',name:'Explorador',desc:'Visita todas las secciones',trigger:m=>false},
+  {id:'collab',icon:'🤝',name:'Colaborador',desc:'Reto de arena completado',trigger:m=>G.completedRetos.length>0},
+];
+function checkBadges(missionId){
+  BADGES_DATA.forEach(b=>{
+    if(!G.earnedBadges.includes(b.id)&&b.trigger(missionId)){
+      G.earnedBadges.push(b.id);
+      showToast('🏅 Nuevo badge: '+b.name,'ok');
+      buildSidebarBadges();
+    }
+  });
+}
+function buildSidebarBadges(){
+  const wrap=document.getElementById('sidebar-badges');
+  if(!wrap)return;
+  wrap.innerHTML='';
+  BADGES_DATA.slice(0,8).forEach(b=>{
+    const earned=G.earnedBadges.includes(b.id);
+    wrap.innerHTML+=`<div class="badge-item" title="${b.desc}"><div class="badge-circle ${earned?'earned':'locked2'}">${b.icon}</div><div class="badge-label">${b.name.split(' ')[0]}</div></div>`;
+  });
+}
+
+// ═══════════════════════════════════
+// CELEBRATION
+// ═══════════════════════════════════
+const CFCOLORS=['#7f77dd','#1d9e75','#ef9f27','#d4537e','#d85a30','#fff'];
+function showCelebration(xp){
+  document.getElementById('cel-xp-text').textContent='+'+xp+' XP ganados';
+  const cc=document.getElementById('cel-confetti');
+  cc.innerHTML='';
+  for(let i=0;i<60;i++){
+    const p=document.createElement('div');
+    p.className='confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${CFCOLORS[Math.floor(Math.random()*CFCOLORS.length)]};animation-delay:${Math.random()*1.5}s;animation-duration:${1.5+Math.random()}s;transform:rotate(${Math.random()*360}deg);`;
+    cc.appendChild(p);
+  }
+  document.getElementById('celebration').classList.add('show');
+}
+function closeCel(){document.getElementById('celebration').classList.remove('show');}
+
+// ═══════════════════════════════════
+// TEORIA SECTION
+// ═══════════════════════════════════
+const ALL_CONCEPTS=[
+  {tag:'<!DOCTYPE>',title:'Declaración DOCTYPE',desc:'Indica al navegador que use HTML5.',level:1,
+   code:'&lt;!DOCTYPE html&gt;\n&lt;html lang="es"&gt;...&lt;/html&gt;',
+   preview:'<div style="background:#f0f9f0;padding:8px;border-radius:4px;font-size:11px;color:#1d9e75;text-align:center">✓ HTML5 activo</div>'},
+  {tag:'<html>',title:'Elemento raíz',desc:'Contenedor de toda la página.',level:1,
+   code:'&lt;html lang="es"&gt;\n  &lt;head&gt;...&lt;/head&gt;\n  &lt;body&gt;...&lt;/body&gt;\n&lt;/html&gt;',
+   preview:'<div style="border:2px dashed #ccc;padding:8px;border-radius:4px;font-size:11px;text-align:center;color:#666">Contenedor raíz</div>'},
+  {tag:'<head>',title:'Cabecera',desc:'Metadatos, título, links a CSS.',level:1,
+   code:'&lt;head&gt;\n  &lt;meta charset="UTF-8"&gt;\n  &lt;title&gt;Mi página&lt;/title&gt;\n&lt;/head&gt;',
+   preview:'<div style="font-size:11px;color:#555">Pestaña del navegador: <strong>Mi página</strong></div>'},
+  {tag:'<h1>–<h6>',title:'Encabezados',desc:'Jerarquía visual de títulos.',level:2,
+   code:'&lt;h1&gt;Título&lt;/h1&gt;\n&lt;h2&gt;Subtítulo&lt;/h2&gt;\n&lt;h3&gt;Sección&lt;/h3&gt;',
+   preview:'<h1 style="font-size:18px;margin:0 0 3px">Título</h1><h2 style="font-size:14px;font-weight:normal;margin:0 0 3px;color:#444">Subtítulo</h2><h3 style="font-size:12px;font-weight:600;margin:0;color:#666">Sección</h3>'},
+  {tag:'<p>',title:'Párrafo',desc:'Bloque de texto con espaciado automático.',level:2,
+   code:'&lt;p&gt;Primer párrafo.&lt;/p&gt;\n&lt;p&gt;Segundo párrafo.&lt;/p&gt;',
+   preview:'<p style="font-size:12px;margin:0 0 7px">Primer párrafo.</p><p style="font-size:12px;margin:0">Segundo párrafo.</p>'},
+  {tag:'<strong>/<em>',title:'Énfasis de texto',desc:'Negrita e itálica con significado.',level:2,
+   code:'&lt;p&gt;El &lt;strong&gt;reactor&lt;/strong&gt; está &lt;em&gt;activo&lt;/em&gt;.&lt;/p&gt;',
+   preview:'<p style="font-size:13px;margin:0">El <strong>reactor</strong> está <em>activo</em>.</p>'},
+  {tag:'<img>',title:'Imagen',desc:'Inserta imágenes. Vacía, sin cierre.',level:3,
+   code:'&lt;img\n  src="foto.jpg"\n  alt="Descripción"\n  width="300"\n&gt;',
+   preview:'<div style="width:80px;height:55px;background:#eee;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:24px">🖼️</div>'},
+  {tag:'<a>',title:'Hipervínculo',desc:'Links de navegación con href.',level:3,
+   code:'&lt;a href="https://..." target="_blank"&gt;\n  Visitar\n&lt;/a&gt;',
+   preview:'<a href="#" style="color:#7f77dd;font-size:13px">Visitar →</a>'},
+  {tag:'<button>',title:'Botón',desc:'Elemento de acción interactiva.',level:4,
+   code:'&lt;button type="button"&gt;Clic aquí&lt;/button&gt;\n&lt;button type="submit"&gt;Enviar&lt;/button&gt;',
+   preview:'<button style="padding:5px 12px;background:#7f77dd;color:#fff;border:none;border-radius:5px;font-size:12px;margin-right:5px">Clic aquí</button><button style="padding:5px 12px;background:#1d9e75;color:#fff;border:none;border-radius:5px;font-size:12px">Enviar</button>'},
+  {tag:'<ul>/<ol>',title:'Listas',desc:'Viñetas (ul) o numeradas (ol).',level:4,
+   code:'&lt;ul&gt;\n  &lt;li&gt;Elemento 1&lt;/li&gt;\n  &lt;li&gt;Elemento 2&lt;/li&gt;\n&lt;/ul&gt;',
+   preview:'<ul style="font-size:12px;padding-left:16px;margin:0"><li>Elemento 1</li><li>Elemento 2</li></ul>'},
+  {tag:'<div>',title:'Contenedor div',desc:'Agrupador genérico de bloques.',level:5,
+   code:'&lt;div class="tarjeta"&gt;\n  &lt;h2&gt;Título&lt;/h2&gt;\n  &lt;p&gt;Texto&lt;/p&gt;\n&lt;/div&gt;',
+   preview:'<div style="border:1px dashed #ccc;padding:8px;border-radius:4px"><h2 style="font-size:13px;margin:0 0 3px">Título</h2><p style="font-size:11px;margin:0;color:#666">Texto</p></div>'},
+  {tag:'class/id',title:'Selectores CSS',desc:'class reutilizable · id único.',level:5,
+   code:'&lt;div class="tarjeta" id="principal"&gt;\n  Elemento único\n&lt;/div&gt;',
+   preview:'<div style="padding:7px 12px;background:#7f77dd;color:#fff;border-radius:5px;font-size:12px">class="tarjeta" id="principal"</div>'},
+  {tag:'<form>',title:'Formulario',desc:'Contenedor de campos de entrada.',level:6,
+   code:'&lt;form action="/enviar" method="post"&gt;\n  ...campos...\n&lt;/form&gt;',
+   preview:'<div style="border:1px dashed #7f77dd;padding:10px;border-radius:5px;font-size:11px;color:#666;text-align:center">Formulario</div>'},
+  {tag:'<input>',title:'Campo de entrada',desc:'text, email, password, checkbox...',level:6,
+   code:'&lt;input type="text" placeholder="Nombre"&gt;\n&lt;input type="email" placeholder="Email"&gt;\n&lt;input type="password"&gt;',
+   preview:'<div style="display:flex;flex-direction:column;gap:4px"><input type="text" placeholder="Nombre" style="border:1px solid #ccc;padding:4px 7px;border-radius:4px;font-size:11px"><input type="email" placeholder="Email" style="border:1px solid #ccc;padding:4px 7px;border-radius:4px;font-size:11px"></div>'},
+];
+
+let activeCC=null;
+function buildTeoria(){
+  const wrap=document.getElementById('concept-cards');
+  if(!wrap)return;
+  ALL_CONCEPTS.forEach((c,i)=>{
+    const el=document.createElement('div');
+    el.className='concept-card';
+    el.innerHTML=`<div class="cc-header"><div class="cc-tag">${c.tag}</div><div class="cc-title">${c.title}</div></div><div class="cc-body">${c.desc} <span style="color:var(--accent);font-size:10px">Nv.${c.level}</span></div>`;
+    el.onclick=()=>showConceptDetail(c,el);
+    wrap.appendChild(el);
+  });
+}
+function showConceptDetail(c,el){
+  if(activeCC)activeCC.classList.remove('selected');
+  el.classList.add('selected'); activeCC=el;
+  const det=document.getElementById('teoria-detail');
+  det.style.display='block';
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
+  document.getElementById('td-content').innerHTML=`
+    <div class="td-title">${c.tag} — ${c.title}</div>
+    <div class="td-desc">${c.desc}</div>
+    <div class="td-grid">
+      <div>
+        <div class="concept-label">Pruébalo aquí</div>
+        <textarea class="mini-editor" id="mini-ed" oninput="updateMiniPrev()" style="min-height:120px;">${unesc(c.code)}</textarea>
+        <button class="run-btn" onclick="updateMiniPrev()">▶ Ejecutar</button>
+      </div>
+      <div>
+        <div class="concept-label">Preview</div>
+        <div class="mini-preview" id="mini-prev">${c.preview}</div>
+      </div>
+    </div>`;
+}
+function unesc(s){return s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');}
+function updateMiniPrev(){
+  const v=document.getElementById('mini-ed')?.value||'';
+  const safe=v.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/on\w+="[^"]*"/gi,'').replace(/javascript:/gi,'');
+  document.getElementById('mini-prev').innerHTML=safe||'Preview...';
+}
+
+// ═══════════════════════════════════
+// ARENA
+// ═══════════════════════════════════
+const RETOS=[
+  {id:'R1',title:'Tarjeta de perfil',diff:'easy',xp:100,type:'Construcción',desc:'Crea una tarjeta de perfil con: imagen (img con src y alt), nombre (h2), descripción (p) y un link a redes sociales.',
+   validate:c=>check([{ok:c.includes('<img'),msg:'Necesitas <img>'},{ok:c.includes('src='),msg:'img necesita src='},{ok:c.includes('alt='),msg:'img necesita alt='},{ok:c.includes('<h2'),msg:'Añade <h2> con el nombre'},{ok:c.includes('<p'),msg:'Añade descripción con <p>'},{ok:c.includes('<a '),msg:'Añade link con <a>'}]),
+   hint:'<div style="border:1px solid #ccc;padding:16px;border-radius:8px;max-width:280px">\n  <img src="https://placehold.co/80x80" alt="Foto de perfil" width="80" style="border-radius:50%">\n  <h2>Agente XR-7</h2>\n  <p>Especialista en sistemas cuánticos.</p>\n  <a href="https://github.com">Ver GitHub</a>\n</div>'},
+  {id:'R2',title:'Corrige el HTML roto',diff:'easy',xp:80,type:'Bug fixing',
+   desc:'El siguiente HTML tiene errores. Cópialo, corrígelos y verifica:\n\n<h1>Mi siti web\n<img src="foto.jpg>\n<a href="">Ver más</a>\n<p>Bienvenido\n\nPistas: falta </h1>, alt en img, href no vacío, </p>',
+   validate:c=>{const lc=c.toLowerCase();return check([{ok:lc.includes('</h1>'),msg:'Cierra el h1 con </h1>'},{ok:lc.includes('alt='),msg:'Añade alt= a tu img'},{ok:(()=>{const m=lc.match(/href="([^"]*)"/);return m&&m[1].length>1;})(),msg:'El href no puede estar vacío'},{ok:lc.includes('</p>'),msg:'Cierra el párrafo con </p>'}]);},
+   hint:'<h1>Mi sitio web</h1>\n<img src="foto.jpg" alt="Foto del sitio">\n<a href="https://ejemplo.com">Ver más</a>\n<p>Bienvenido al portal.</p>'},
+  {id:'R3',title:'Menú de navegación',diff:'med',xp:150,type:'Construcción',
+   desc:'Construye un menú de navegación completo con lista no ordenada (ul) que tenga 4 links (a). Cada link debe tener href y texto visible.',
+   validate:c=>{const lc=c.toLowerCase();return check([{ok:lc.includes('<ul'),msg:'Usa <ul> para la lista'},{ok:(lc.match(/<li/g)||[]).length>=4,msg:'Necesitas al menos 4 <li>'},{ok:(lc.match(/<a /g)||[]).length>=4,msg:'Cada <li> debe tener un <a>'},{ok:lc.includes('href='),msg:'Los links necesitan href='},{ok:lc.includes('</ul>'),msg:'Cierra la lista con </ul>'}]);},
+   hint:'<nav>\n  <ul>\n    <li><a href="#">Inicio</a></li>\n    <li><a href="#">Sobre mí</a></li>\n    <li><a href="#">Portfolio</a></li>\n    <li><a href="#">Contacto</a></li>\n  </ul>\n</nav>'},
+  {id:'R4',title:'Formulario de contacto',diff:'med',xp:200,type:'Construcción',
+   desc:'Crea un formulario completo con: campo nombre (text), campo email (email), área de mensaje (textarea) y botón de envío.',
+   validate:c=>{const lc=c.toLowerCase();return check([{ok:lc.includes('<form'),msg:'Usa <form> como contenedor'},{ok:lc.includes('type="text"')||lc.includes("type='text'"),msg:'Añade input type="text" para nombre'},{ok:lc.includes('type="email"')||lc.includes("type='email'"),msg:'Añade input type="email"'},{ok:lc.includes('<textarea'),msg:'Añade <textarea> para el mensaje'},{ok:lc.includes('<button')||lc.includes('type="submit"'),msg:'Añade un botón de envío'},{ok:lc.includes('</form>'),msg:'Cierra el form con </form>'}]);},
+   hint:'<form>\n  <label>Nombre:</label>\n  <input type="text" placeholder="Tu nombre"><br><br>\n  <label>Email:</label>\n  <input type="email" placeholder="tu@email.com"><br><br>\n  <label>Mensaje:</label>\n  <textarea rows="4" placeholder="Escribe tu mensaje..."></textarea><br><br>\n  <button type="submit">Enviar mensaje</button>\n</form>'},
+  {id:'R5',title:'Galería con links',diff:'med',xp:180,type:'Construcción',
+   desc:'Construye una galería con 3 imágenes. Cada imagen debe: tener src y alt, estar dentro de un div, y estar envuelta en un link (a href).',
+   validate:c=>{const lc=c.toLowerCase();return check([{ok:(lc.match(/<img/g)||[]).length>=3,msg:'Necesitas al menos 3 imágenes'},{ok:lc.includes('src='),msg:'Las imágenes necesitan src='},{ok:lc.includes('alt='),msg:'Las imágenes necesitan alt='},{ok:(lc.match(/<div/g)||[]).length>=3,msg:'Cada imagen en su propio <div>'},{ok:(lc.match(/<a /g)||[]).length>=3,msg:'Cada imagen envuelta en un <a>'}]);},
+   hint:'<div style="display:flex;gap:10px;">\n  <div><a href="#"><img src="https://placehold.co/120x80" alt="Foto 1"></a></div>\n  <div><a href="#"><img src="https://placehold.co/120x80" alt="Foto 2"></a></div>\n  <div><a href="#"><img src="https://placehold.co/120x80" alt="Foto 3"></a></div>\n</div>'},
+  {id:'R6',title:'Página personal completa',diff:'hard',xp:300,type:'Construcción libre',
+   desc:'Construye una página personal completa con: DOCTYPE, html, head con title, body con h1, al menos 2 secciones (div), párrafos, una imagen, un link y un formulario de contacto básico.',
+   validate:c=>{const lc=c.toLowerCase();return check([{ok:lc.includes('<!doctype'),msg:'Añade <!DOCTYPE html>'},{ok:lc.includes('<title'),msg:'Añade <title> en el head'},{ok:lc.includes('<h1'),msg:'Necesitas un <h1>'},{ok:(lc.match(/<div/g)||[]).length>=2,msg:'Al menos 2 secciones con <div>'},{ok:lc.includes('<img'),msg:'Añade una imagen'},{ok:lc.includes('<a '),msg:'Añade un link'},{ok:lc.includes('<form'),msg:'Añade un formulario básico'},{ok:lc.includes('<input'),msg:'El formulario necesita al menos un <input>'}]);},
+   hint:'<!DOCTYPE html>\n<html lang="es">\n<head>\n  <title>Mi Portfolio</title>\n</head>\n<body>\n  <h1>Hola, soy Agente XR</h1>\n  <div>\n    <h2>Sobre mí</h2>\n    <img src="https://placehold.co/150x150" alt="Mi foto">\n    <p>Especialista en tecnologías cuánticas.</p>\n  </div>\n  <div>\n    <h2>Proyectos</h2>\n    <p>Visita mi <a href="https://github.com">GitHub</a></p>\n  </div>\n  <form>\n    <input type="email" placeholder="tu@email.com">\n    <button>Contactar</button>\n  </form>\n</body>\n</html>'},
+  {id:'R7',title:'⚡ Reto relámpago',diff:'hard',xp:200,type:'Speed run ⏱',
+   desc:'RETO ESPECIAL — Tienes 60 segundos para crear:\n• h1 con cualquier título\n• párrafo con texto\n• img con src y alt\n• link con href\n\n¡El cronómetro empieza cuando abras el modal!',
+   validate:c=>{const lc=c.toLowerCase();return check([{ok:lc.includes('<h1'),msg:'Necesitas <h1>'},{ok:lc.includes('<p'),msg:'Necesitas <p>'},{ok:lc.includes('<img'),msg:'Necesitas <img>'},{ok:lc.includes('src='),msg:'img necesita src='},{ok:lc.includes('alt='),msg:'img necesita alt='},{ok:lc.includes('<a '),msg:'Necesitas <a>'},{ok:lc.includes('href='),msg:'a necesita href='}]);},
+   hint:'<h1>Mi página rápida</h1>\n<p>Construida en tiempo récord.</p>\n<img src="https://placehold.co/200x100" alt="Imagen rápida">\n<a href="https://ejemplo.com">Ver más</a>'},
+  {id:'R8',title:'Tabla de datos',diff:'hard',xp:240,type:'Construcción',
+   desc:'Crea una tabla HTML completa con: thead, tbody, al menos 3 columnas y 4 filas de datos, usando th para cabeceras y td para celdas.',
+   validate:c=>{const lc=c.toLowerCase();return check([{ok:lc.includes('<table'),msg:'Usa <table> como contenedor'},{ok:lc.includes('<thead'),msg:'Añade <thead> para las cabeceras'},{ok:lc.includes('<tbody'),msg:'Añade <tbody> para los datos'},{ok:(lc.match(/<th/g)||[]).length>=3,msg:'Al menos 3 <th> en el encabezado'},{ok:(lc.match(/<tr/g)||[]).length>=5,msg:'Al menos 5 filas <tr> (1 header + 4 datos)'},{ok:(lc.match(/<td/g)||[]).length>=12,msg:'Al menos 12 celdas <td> (4 filas × 3 col)'}]);},
+   hint:'<table border="1">\n  <thead>\n    <tr>\n      <th>Agente</th>\n      <th>Departamento</th>\n      <th>Estado</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr><td>XR-001</td><td>Ingeniería</td><td>Activo</td></tr>\n    <tr><td>XR-002</td><td>Ciencias</td><td>En misión</td></tr>\n    <tr><td>XR-003</td><td>Seguridad</td><td>Activo</td></tr>\n    <tr><td>XR-004</td><td>Sistemas</td><td>Descanso</td></tr>\n  </tbody>\n</table>'},
+];
+
+let currentReto=null,retoTimer=null,modalHintUsed=false;
+
+function buildArena(){
+  const grid=document.getElementById('arena-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  RETOS.forEach(r=>{
+    const done=G.completedRetos.includes(r.id);
+    const diffCls=r.diff==='easy'?'d-easy':r.diff==='med'?'d-med':'d-hard';
+    const diffLbl=r.diff==='easy'?'Fácil':r.diff==='med'?'Medio':'Difícil';
+    const el=document.createElement('div');
+    el.className='reto-card'+(done?' rc-done':'');
+    el.id='rcard-'+r.id;
+    el.innerHTML=`
+      ${done?'<div class="done-overlay">✓ completado</div>':''}
+      <div class="reto-top">
+        <div class="reto-diff ${diffCls}">${diffLbl}</div>
+        <div class="reto-title">${r.title}</div>
+        <div class="reto-desc">${r.desc.split('\n')[0]}</div>
+      </div>
+      <div class="reto-bottom">
+        <div class="reto-xp">+${r.xp} XP</div>
+        <div class="reto-type">${r.type}</div>
+      </div>`;
+    el.onclick=()=>openReto(r);
+    grid.appendChild(el);
+  });
+}
+
+function openReto(r){
+  currentReto=r; modalHintUsed=false;
+  document.getElementById('modal-title').textContent=r.title+' · +'+r.xp+' XP';
+  document.getElementById('modal-desc').textContent=r.desc;
+  document.getElementById('modal-code').value='';
+  document.getElementById('modal-preview').innerHTML='<span style="color:#999;font-size:12px">Preview...</span>';
+  document.getElementById('modal-feedback').className='feedback';
+  document.getElementById('modal-score').textContent='—';
+  document.getElementById('modal-timer').textContent='';
+  document.getElementById('reto-modal').classList.add('open');
+  clearInterval(retoTimer);
+  if(r.id==='R7'){
+    let t=60;
+    document.getElementById('modal-timer').textContent='⏱ '+t+'s';
+    retoTimer=setInterval(()=>{
+      t--;
+      document.getElementById('modal-timer').textContent='⏱ '+t+'s';
+      if(t<=10) document.getElementById('modal-timer').style.color='var(--danger)';
+      if(t<=0){clearInterval(retoTimer);showFeedback('modal-feedback','⏰ ¡Tiempo agotado! Inténtalo de nuevo.','err');}
+    },1000);
+  }
+}
+function closeModal(){document.getElementById('reto-modal').classList.remove('open');clearInterval(retoTimer);}
+function modalHint(){
+  modalHintUsed=true;
+  if(!currentReto)return;
+  document.getElementById('modal-code').value=currentReto.hint||'';
+  liveRender('modal-code','modal-preview');
+  showToast('💡 Pista aplicada (-30% XP)','err');
+}
+function verifyModal(){
+  if(!currentReto)return;
+  const code=document.getElementById('modal-code').value;
+  const result=currentReto.validate(code.toLowerCase());
+  const score=Math.round((result.passed/result.total)*100);
+  document.getElementById('modal-score').textContent=score+'%';
+  if(score>=70){
+    clearInterval(retoTimer);
+    if(!G.completedRetos.includes(currentReto.id)){
+      G.completedRetos.push(currentReto.id);
+      const earned=modalHintUsed?Math.round(currentReto.xp*.7):currentReto.xp;
+      gainXP(earned,false);
+      checkBadges(null);
+      buildArena();
+      setTimeout(()=>{closeModal();showCelebration(earned);},600);
+    }
+    showFeedback('modal-feedback','✅ ¡Completado! '+score+'% de puntaje','ok');
+  } else {
+    const failed=(result.results||[]).filter(r=>!r.ok).map(r=>r.msg).join(' · ');
+    showFeedback('modal-feedback','❌ '+score+'% — '+failed,'err');
+  }
+}
+
+// ═══════════════════════════════════
+// PROGRESO
+// ═══════════════════════════════════
+function buildProgreso(){
+  // Level bars
+  const bars=document.getElementById('level-bars');
+  if(bars){
+    bars.innerHTML='';
+    MISSIONS.forEach(m=>{
+      const done=G.completedMissions.includes(m.id);
+      bars.innerHTML+=`
+        <div class="level-progress">
+          <div class="lp-header">
+            <div class="lp-name">${m.icon} ${m.title}</div>
+            <div class="lp-pct">${done?'100':'0'}%</div>
+          </div>
+          <div class="lp-bar"><div class="lp-fill" style="width:${done?100:0}%"></div></div>
+        </div>`;
+    });
+  }
+  // Ranks
+  const row=document.getElementById('ranks-row');
+  if(row){
+    row.innerHTML='';
+    const rankIcons=['🐣','🔧','⚡','🚀','🧠','🏛️'];
+    const rankNames=['Aprendiz','Dev Jr.','Hacker Jr.','Hacker Pro','Maestro','Arquitecto'];
+    const rankXP=[0,500,1000,2000,4000,8000];
+    const cur=getCurrentRank();
+    rankNames.forEach((n,i)=>{
+      const done=G.xp>=rankXP[i];
+      const isCur=RANKS[i]&&RANKS[i].name===cur.name;
+      row.innerHTML+=`
+        <div class="rank-node ${done?'rn-done':''} ${isCur?'rn-cur':''}">
+          <div class="rn-icon">${rankIcons[i]}</div>
+          <div class="rn-name">${n}</div>
+          <div class="rn-xp">${rankXP[i]} XP</div>
+        </div>`;
+    });
+  }
+  // Badges
+  const ab=document.getElementById('all-badges');
+  if(ab){
+    ab.innerHTML='';
+    BADGES_DATA.forEach(b=>{
+      const earned=G.earnedBadges.includes(b.id);
+      ab.innerHTML+=`
+        <div class="ab-card ${earned?'ab-earned':'ab-locked'}" title="${b.desc}">
+          <div class="ab-icon">${b.icon}</div>
+          <div class="ab-name">${b.name}</div>
+          <div class="ab-desc">${b.desc}</div>
+        </div>`;
+    });
+  }
+  updateProgresoStats();
+}
+function updateProgreso(){buildProgreso();}
+function updateProgresoStats(){
+  const px=document.getElementById('p-xp'); if(px)px.textContent=G.xp;
+  const pc=document.getElementById('p-coins'); if(pc)pc.textContent=G.coins;
+  const ps=document.getElementById('p-streak'); if(ps)ps.textContent=G.streak;
+  const pm=document.getElementById('p-missions'); if(pm)pm.textContent=G.completedMissions.length;
+}
+</script>
+</body>
+</html>
